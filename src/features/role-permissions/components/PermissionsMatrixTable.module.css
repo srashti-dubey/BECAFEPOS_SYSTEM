@@ -1,0 +1,60 @@
+.wrapper {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.table th,
+.table td {
+  padding: var(--space-3) var(--space-2);
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+.table th {
+  color: var(--text);
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 12px;
+  letter-spacing: 0.02em;
+}
+
+.menuCell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.menuName {
+  color: var(--text-h);
+  font-weight: 500;
+}
+
+.menuRoute {
+  color: var(--text);
+  font-size: 12px;
+  font-family: var(--mono);
+}
+
+.selectAllLink {
+  background: none;
+  border: none;
+  color: var(--accent);
+  cursor: pointer;
+  font: inherit;
+  padding: 0;
+}
+
+.selectAllLink:hover {
+  color: var(--accent-hover);
+}
+
+.selectAllLink:disabled {
+  color: var(--text);
+  cursor: not-allowed;
+}

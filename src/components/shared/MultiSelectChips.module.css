@@ -1,0 +1,215 @@
+.root {
+  position: relative;
+  width: 100%;
+}
+
+.control {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  width: 100%;
+  min-height: 38px;
+  padding: var(--space-2) var(--space-2) var(--space-2) var(--space-3);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  background: var(--bg);
+  cursor: pointer;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s;
+}
+
+.control:hover:not(.disabled) {
+  border-color: var(--border-strong);
+}
+
+.control.open,
+.control:focus-within {
+  border-color: var(--accent);
+  box-shadow: var(--focus-ring);
+}
+
+.control.invalid {
+  border-color: var(--danger);
+}
+
+.control.invalid.open,
+.control.invalid:focus-within {
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.25);
+}
+
+.control.disabled {
+  background: var(--bg-subtle);
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.chips {
+  display: flex;
+  flex: 1;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+  min-height: 22px;
+  padding: 2px 0;
+}
+
+.placeholder {
+  color: var(--text);
+  opacity: 0.7;
+  font-size: 14px;
+  line-height: 22px;
+  user-select: none;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  max-width: 100%;
+  height: 26px;
+  padding: 0 var(--space-2) 0 var(--space-3);
+  border-radius: var(--radius-md);
+  background: var(--bg-subtle);
+  border: 1px solid var(--border);
+  color: var(--text-h);
+  font-size: 13px;
+}
+
+.chipLabel {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chipRemove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border: none;
+  border-radius: var(--radius-sm, 4px);
+  background: transparent;
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.chipRemove:hover:not(:disabled) {
+  color: var(--text-h);
+  background: var(--border);
+}
+
+.chipRemove:disabled {
+  cursor: not-allowed;
+}
+
+.trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  margin-top: -1px;
+  border: none;
+  border-radius: var(--radius-md);
+  background: transparent;
+  cursor: pointer;
+  color: var(--text);
+}
+
+.trigger:hover:not(:disabled) {
+  background: var(--bg-subtle);
+}
+
+.trigger:disabled {
+  cursor: not-allowed;
+}
+
+.chevron {
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 5px solid currentColor;
+}
+
+.menu {
+  position: absolute;
+  z-index: 20;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  margin: 0;
+  padding: var(--space-1);
+  list-style: none;
+  max-height: 220px;
+  overflow: auto;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  background: var(--bg);
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12);
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  border: none;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--text-h);
+  font-size: 14px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.option:hover {
+  background: var(--bg-subtle);
+}
+
+.optionSelected {
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
+}
+
+.checkbox {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  border: 1px solid var(--border-strong);
+  border-radius: 4px;
+  background: var(--bg);
+  color: #fff;
+  font-size: 11px;
+  line-height: 1;
+}
+
+.checkboxChecked {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.optionLabel {
+  min-width: 0;
+}
+
+.hiddenSelect {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

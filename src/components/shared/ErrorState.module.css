@@ -1,0 +1,25 @@
+.state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: var(--space-2);
+  padding: var(--space-6) var(--space-4);
+  color: var(--danger);
+}
+
+.title {
+  font-size: 16px;
+  color: var(--danger);
+}
+
+.description {
+  font-size: 14px;
+  max-width: 360px;
+  color: var(--text);
+}
+
+.actions {
+  margin-top: var(--space-3);
+}

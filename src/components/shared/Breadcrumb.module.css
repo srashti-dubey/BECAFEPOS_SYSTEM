@@ -1,0 +1,38 @@
+.breadcrumb {
+  font-size: 13px;
+}
+
+.list {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--text);
+}
+
+.item:not(:last-child)::after {
+  content: '/';
+  color: var(--border-strong);
+}
+
+.item a {
+  color: var(--text);
+  text-decoration: none;
+}
+.item a:hover {
+  color: var(--accent);
+  text-decoration: underline;
+}
+
+.item span[aria-current='page'] {
+  color: var(--text-h);
+  font-weight: 500;
+}

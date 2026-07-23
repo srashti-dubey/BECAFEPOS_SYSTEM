@@ -1,0 +1,17 @@
+import { toast } from 'sonner'
+
+class NotificationService {
+  success(message: string) {
+    toast.success(message)
+  }
+
+  error(message: string) {
+    toast.error(message)
+  }
+
+  info(message: string) {
+    toast.info(message)
+  }
+}
+
+export const notificationService = new NotificationService()

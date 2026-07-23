@@ -1,0 +1,62 @@
+.cell {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+}
+
+.interactive {
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+}
+
+.interactive:hover .badge {
+  filter: brightness(0.97);
+}
+
+.interactive:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+.static {
+  cursor: default;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px var(--space-2);
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+  line-height: 1.4;
+}
+
+.success {
+  background: var(--success-bg);
+  color: var(--success);
+}
+
+.warning {
+  background: var(--warning-bg);
+  color: var(--warning);
+}
+
+.danger {
+  background: var(--danger-bg);
+  color: var(--danger);
+}
+
+.requestNo {
+  font-size: 11px;
+  color: var(--text);
+  letter-spacing: 0.01em;
+}

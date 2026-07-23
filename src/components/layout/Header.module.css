@@ -1,0 +1,44 @@
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 56px;
+  padding: 0 var(--space-5);
+  border-bottom: 1px solid var(--border);
+  background: var(--bg);
+  position: sticky;
+  top: 0;
+  z-index: var(--z-header);
+}
+
+.brand {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-h);
+  text-decoration: none;
+}
+
+.userMenu {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.userInfo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  line-height: 1.3;
+}
+
+.userName {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-h);
+}
+
+.userRole {
+  font-size: 11px;
+  color: var(--text);
+  text-transform: capitalize;
+}

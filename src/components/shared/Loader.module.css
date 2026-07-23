@@ -1,0 +1,17 @@
+.loader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  padding: var(--space-6);
+  color: var(--text);
+}
+
+.fullHeight {
+  min-height: 240px;
+}
+
+.label {
+  font-size: 14px;
+}

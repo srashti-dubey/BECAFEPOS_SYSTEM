@@ -1,0 +1,13 @@
+.wrapper {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--bg);
+}
+
+.wrapper table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}

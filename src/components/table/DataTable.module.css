@@ -1,0 +1,48 @@
+.headerCell {
+  text-align: left;
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-subtle);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+}
+
+.sortButton {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  border: none;
+  background: transparent;
+  font: inherit;
+  font-weight: inherit;
+  text-transform: inherit;
+  letter-spacing: inherit;
+  color: inherit;
+  cursor: pointer;
+  padding: 0;
+}
+
+.sortIndicator {
+  font-size: 9px;
+}
+
+.cell {
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--border);
+  color: var(--text-h);
+}
+
+tbody tr:last-child .cell {
+  border-bottom: none;
+}
+
+.clickableRow {
+  cursor: pointer;
+}
+.clickableRow:hover .cell {
+  background: var(--bg-subtle);
+}

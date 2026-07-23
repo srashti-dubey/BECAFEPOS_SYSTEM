@@ -1,0 +1,128 @@
+:root {
+  --text: #4b5563;
+  --text-h: #08060d;
+  --bg: #fff;
+  --bg-subtle: #f8f9fb;
+  --border: #e5e4e7;
+  --border-strong: #cfced3;
+
+  --accent: #6d28d9;
+  --accent-hover: #5b21b6;
+  --accent-bg: rgba(109, 40, 217, 0.08);
+  --accent-border: rgba(109, 40, 217, 0.4);
+
+  --danger: #dc2626;
+  --danger-hover: #b91c1c;
+  --danger-bg: rgba(220, 38, 38, 0.08);
+
+  --success: #16a34a;
+  --success-bg: rgba(22, 163, 74, 0.1);
+
+  --warning: #d97706;
+  --warning-bg: rgba(217, 119, 6, 0.1);
+
+  --focus-ring: 0 0 0 3px rgba(109, 40, 217, 0.35);
+  --shadow-sm: rgba(0, 0, 0, 0.06) 0 1px 2px 0;
+  --shadow-md: rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
+
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+
+  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
+  --mono: ui-monospace, Consolas, monospace;
+
+  --z-header: 10;
+  --z-drawer: 40;
+  --z-modal: 50;
+
+  font: 16px/150% var(--sans);
+  color-scheme: light dark;
+  color: var(--text);
+  background: var(--bg-subtle);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --text: #9ca3af;
+    --text-h: #f3f4f6;
+    --bg: #16171d;
+    --bg-subtle: #1c1d24;
+    --border: #2e303a;
+    --border-strong: #3d3f4b;
+    --accent: #a78bfa;
+    --accent-hover: #c4b5fd;
+    --accent-bg: rgba(167, 139, 250, 0.15);
+    --accent-border: rgba(167, 139, 250, 0.5);
+    --shadow-sm: rgba(0, 0, 0, 0.3) 0 1px 2px 0;
+    --shadow-md: rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+#root {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--sans);
+  font-weight: 600;
+  color: var(--text-h);
+  margin: 0;
+}
+
+h1 {
+  font-size: 28px;
+}
+h2 {
+  font-size: 20px;
+}
+h3 {
+  font-size: 16px;
+}
+
+p {
+  margin: 0;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+a {
+  color: var(--accent);
+}
+
+:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+  border-radius: var(--radius-sm);
+}
