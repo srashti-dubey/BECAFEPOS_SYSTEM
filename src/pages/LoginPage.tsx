@@ -28,7 +28,7 @@ export default function LoginPage() {
   const location = useLocation()
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated)
   const isHydrated = useAuthStore((state) => state.isHydrated)
-  const redirectTo = (location.state as { from?: string } | null)?.from ?? ROUTES.dashboard
+  const redirectTo = (location.state as { from?: string } | null)?.from ?? ROUTES.pos
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),

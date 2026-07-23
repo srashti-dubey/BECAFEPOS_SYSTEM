@@ -20,7 +20,7 @@ export function Header() {
 
   return (
     <header className={styles.header}>
-      <Link to={ROUTES.dashboard} className={styles.brand}>
+      <Link to={ROUTES.pos} className={styles.brand}>
         {env.VITE_APP_NAME}
       </Link>
 

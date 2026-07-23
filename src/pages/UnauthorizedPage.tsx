@@ -9,8 +9,8 @@ export default function UnauthorizedPage() {
       <h1 className={styles.code}>403</h1>
       <h2 className={styles.title}>You don't have access to this page</h2>
       <p className={styles.description}>Contact your administrator if you believe this is a mistake.</p>
-      <Link to={ROUTES.dashboard}>
-        <Button>Back to dashboard</Button>
+      <Link to={ROUTES.pos}>
+        <Button>Back to POS</Button>
       </Link>
     </div>
   )

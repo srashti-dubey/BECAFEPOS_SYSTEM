@@ -1,15 +1,15 @@
-import { useEffect, useState } from "react";
-import { Grid } from "@mui/material";
-import { loadProducts } from "../services/productService";
-import ProductCard from "./ProductCard";
-import type { Product } from "@/database/appDatabase";
+import { useEffect, useState } from 'react'
+import { Grid } from '@mui/material'
+import { loadProducts } from '../services/productService'
+import ProductCard from './ProductCard'
+import type { Product } from '@/database/appDatabase'
 
 export default function ProductGrid() {
-  const [products, setProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<Product[]>([])
 
   useEffect(() => {
-    loadProducts().then(setProducts);
-  }, []);
+    loadProducts().then(setProducts)
+  }, [])
 
   return (
     <Grid container spacing={2}>
@@ -19,5 +19,5 @@ export default function ProductGrid() {
         </Grid>
       ))}
     </Grid>
-  );
+  )
 }

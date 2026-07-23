@@ -9,8 +9,8 @@ export default function NotFoundPage() {
       <h1 className={styles.code}>404</h1>
       <h2 className={styles.title}>Page not found</h2>
       <p className={styles.description}>The page you're looking for doesn't exist or has been moved.</p>
-      <Link to={ROUTES.dashboard}>
-        <Button>Back to dashboard</Button>
+      <Link to={ROUTES.pos}>
+        <Button>Back to POS</Button>
       </Link>
     </div>
   )

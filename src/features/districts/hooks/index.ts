@@ -1,5 +1,0 @@
-export * from './districtsKeys'
-export * from './useDistrictsQuery'
-export * from './useDistrictsActiveListQuery'
-export * from './useDistrictQuery'
-export * from './useDistrictMutations'

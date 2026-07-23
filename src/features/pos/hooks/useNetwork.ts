@@ -1,28 +1,20 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react'
 
 export default function useNetwork() {
+  const [online, setOnline] = useState(navigator.onLine)
 
-    const [online, setOnline] = useState(navigator.onLine);
+  useEffect(() => {
+    const onlineHandler = () => setOnline(true)
+    const offlineHandler = () => setOnline(false)
 
-    useEffect(() => {
+    window.addEventListener('online', onlineHandler)
+    window.addEventListener('offline', offlineHandler)
 
-        const onlineHandler = () => setOnline(true);
+    return () => {
+      window.removeEventListener('online', onlineHandler)
+      window.removeEventListener('offline', offlineHandler)
+    }
+  }, [])
 
-        const offlineHandler = () => setOnline(false);
-
-        window.addEventListener("online", onlineHandler);
-
-        window.addEventListener("offline", offlineHandler);
-
-        return () => {
-
-            window.removeEventListener("online", onlineHandler);
-
-            window.removeEventListener("offline", offlineHandler);
-
-        };
-
-    }, []);
-
-    return online;
+  return online
 }

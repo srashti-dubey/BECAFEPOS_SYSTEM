@@ -1,17 +1,17 @@
-import { useEffect } from "react";
-import { Grid } from "@mui/material";
-import CategoryPanel from "../components/CategoryPanel";
-import ProductGrid from "../components/ProductGrid.tsx";
-import CartPanel from "../components/CartPanel";
-import { syncPendingOrders } from "../services/syncService";
+import { useEffect } from 'react'
+import { Grid } from '@mui/material'
+import CategoryPanel from '../components/CategoryPanel'
+import ProductGrid from '../components/ProductGrid'
+import CartPanel from '../components/CartPanel'
+import { syncPendingOrders } from '../services/syncService'
 
 export default function POSPage() {
   useEffect(() => {
-    syncPendingOrders();
+    syncPendingOrders()
 
-    window.addEventListener("online", syncPendingOrders);
-    return () => window.removeEventListener("online", syncPendingOrders);
-  }, []);
+    window.addEventListener('online', syncPendingOrders)
+    return () => window.removeEventListener('online', syncPendingOrders)
+  }, [])
 
   return (
     <Grid container spacing={2} sx={{ p: 2 }}>
@@ -27,5 +27,5 @@ export default function POSPage() {
         <CartPanel />
       </Grid>
     </Grid>
-  );
+  )
 }

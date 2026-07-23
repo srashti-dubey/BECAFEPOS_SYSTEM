@@ -1,15 +1,10 @@
-import { Paper, List, ListItemButton, ListItemText, Typography } from "@mui/material";
+import { Paper, List, ListItemButton, ListItemText, Typography } from '@mui/material'
 
-const categories = [
-  "All",
-  "Beverages",
-  "Fast Food",
-  "Snacks"
-];
+const categories = ['All', 'Beverages', 'Fast Food', 'Snacks']
 
 export default function CategoryPanel() {
   return (
-    <Paper sx={{ p: 2, height: "100%" }}>
+    <Paper sx={{ p: 2, height: '100%' }}>
       <Typography variant="h6" gutterBottom>
         Categories
       </Typography>
@@ -22,5 +17,5 @@ export default function CategoryPanel() {
         ))}
       </List>
     </Paper>
-  );
+  )
 }
