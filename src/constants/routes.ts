@@ -7,4 +7,7 @@ export const ROUTES = {
 
   pos: '/admin/pos',
   posPayment: '/admin/pos/payment',
+
+  customers: '/admin/customers',
+  customerDetail: (id: string) => `/admin/customers/${id}`,
 } as const

@@ -1,5 +1,5 @@
 import Chip from '@mui/material/Chip'
-import useNetwork from '../hooks/useNetwork'
+import { useNetwork } from '@/hooks'
 
 export default function SyncStatus() {
   const online = useNetwork()

@@ -6,7 +6,7 @@ import { LoadingState } from '@/app/LoadingState'
 import ErrorBoundary from '@/app/ErrorBoundary'
 import { PublicLayout } from '@/layouts/PublicLayout'
 import { ProtectedLayout } from '@/layouts/ProtectedLayout'
-import { ProtectedRoute } from '@/auth/guards'
+import { ProtectedRoute, RoutePermissionGuard } from '@/auth/guards'
 import { ROUTES } from '@/constants/routes'
 import LoginPage from '@/pages/LoginPage'
 import LogoutPage from '@/pages/LogoutPage'
@@ -14,6 +14,9 @@ import LogoutPage from '@/pages/LogoutPage'
 const NotFoundPage = lazy(() => import('@/pages/NotFoundPage'))
 const UnauthorizedPage = lazy(() => import('@/pages/UnauthorizedPage'))
 // hygen:lazy-imports (do not remove — new module page imports are injected after this line)
+const CustomerListPage = lazy(() => import('@/features/customers/pages/CustomerListPage'))
+const CustomerViewPage = lazy(() => import('@/features/customers/pages/CustomerViewPage'))
+
 
 // Hand-built POS module — offline-first (Dexie), doesn't fit the CRUD-module generator shape.
 const POSPage = lazy(() => import('@/features/pos/pages/POSPage'))
@@ -66,6 +69,29 @@ export const routes: RouteObject[] = [
             element: <Navigate to={ROUTES.pos} replace />,
           },
           // hygen:feature-routes (do not remove — new module route blocks are injected after this line)
+          {
+            path: 'customers',
+            children: [
+              {
+                index: true,
+                element: withSuspense(
+                  <RoutePermissionGuard route={ROUTES.customers} action="view">
+                    <CustomerListPage />
+                  </RoutePermissionGuard>,
+                ),
+              },
+              {
+                path: ':id',
+                element: withSuspense(
+                  <RoutePermissionGuard route={ROUTES.customers} action="view">
+                    <CustomerViewPage />
+                  </RoutePermissionGuard>,
+                ),
+              },
+            ],
+          },
+
+
           {
             path: 'pos',
             children: [

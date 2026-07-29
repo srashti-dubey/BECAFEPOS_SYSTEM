@@ -53,7 +53,10 @@ export function DataTable<TData>({
     getCoreRowModel: getCoreRowModel(),
   })
 
-  if (isError) {
+  // Only block the whole table on isError/isLoading when there's no data to show yet — e.g. a
+  // locally-queued offline draft should still render even while the server list fetch is erroring
+  // or mid-retry, rather than being hidden behind a full-page loader/error state.
+  if (isError && data.length === 0) {
     return (
       <ErrorState title="Something went wrong" description={errorMessage}>
         {onRetry ? <Button onClick={onRetry}>Retry</Button> : null}
@@ -61,7 +64,7 @@ export function DataTable<TData>({
     )
   }
 
-  if (isLoading) {
+  if (isLoading && data.length === 0) {
     return <Loader label="Loading data..." fullHeight />
   }
 

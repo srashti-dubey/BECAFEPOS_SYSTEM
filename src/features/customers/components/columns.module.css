@@ -1,0 +1,43 @@
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+}
+
+.rejectButton {
+  background: var(--bg);
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+.rejectButton:not(:disabled):hover {
+  background: var(--danger-bg);
+  border-color: var(--danger-hover);
+  color: var(--danger-hover);
+}
+
+.pendingBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px var(--space-2);
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+  line-height: 1.4;
+  background: var(--warning-bg);
+  color: var(--warning);
+}
+
+.pendingDeleteBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px var(--space-2);
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+  line-height: 1.4;
+  background: var(--danger-bg);
+  color: var(--danger);
+}
