@@ -14,6 +14,10 @@ services:
       API_UPSTREAM: ${API_UPSTREAM:-http://10.3.33.31:3000}
     ports:
       - "4153:80"
+      # HTTPS (self-signed cert, generated at build time — see Dockerfile). Service workers only
+      # register on a secure context, so the PWA offline-shell behavior needs this URL, not the
+      # plain http:// one on 4153.
+      - "4154:443"
     restart: unless-stopped
     extra_hosts:
       - "host.docker.internal:host-gateway"

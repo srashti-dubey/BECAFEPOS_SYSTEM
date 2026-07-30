@@ -28,15 +28,37 @@ RUN npm run build
 # ---- runtime ----
 FROM nginx:1.27-alpine AS runtime
 
+# Service workers only register on a secure context (HTTPS, or localhost) — this app is served
+# over a plain LAN IP, so the browser never even exposes navigator.serviceWorker there, no matter
+# how the workbox config is tuned (see the memory note on this). A self-signed cert is enough:
+# isSecureContext only cares that the transport is actually TLS, not that the cert is CA-trusted —
+# once a browser has been told to trust/bypass the warning for this host once, the service worker
+# (and therefore offline-shell/navigateFallback) works normally. Generated fresh at build time
+# (not committed) so the private key never sits in source control.
+ARG SERVER_IP=10.3.33.31
+RUN apk add --no-cache openssl && \
+    mkdir -p /etc/nginx/ssl && \
+    openssl req -x509 -nodes -days 825 -newkey rsa:2048 \
+      -keyout /etc/nginx/ssl/server.key \
+      -out /etc/nginx/ssl/server.crt \
+      -subj "/CN=${SERVER_IP}" \
+      -addext "subjectAltName=IP:${SERVER_IP}"
+
 # Template is envsubst'd by the nginx image entrypoint into /etc/nginx/conf.d/default.conf
-# using API_UPSTREAM (see docker-compose environment).
+# using API_UPSTREAM (see docker-compose environment). Listens on both 80 (unchanged, plain HTTP —
+# nothing that already depends on the http:// URL breaks) and 443 ssl (new — visit the https://
+# URL, accept the self-signed warning once, and the service worker can then actually install).
 ENV API_UPSTREAM=http://10.3.33.31:3000
 RUN mkdir -p /etc/nginx/templates && printf '%s\n' \
   'server {' \
   '    listen 80;' \
+  '    listen 443 ssl;' \
   '    server_name _;' \
   '    root /usr/share/nginx/html;' \
   '    index index.html;' \
+  '' \
+  '    ssl_certificate /etc/nginx/ssl/server.crt;' \
+  '    ssl_certificate_key /etc/nginx/ssl/server.key;' \
   '' \
   '    gzip on;' \
   '    gzip_vary on;' \
@@ -75,7 +97,7 @@ RUN mkdir -p /etc/nginx/templates && printf '%s\n' \
   > /etc/nginx/templates/default.conf.template
 COPY --from=builder /app/dist /usr/share/nginx/html
 
-EXPOSE 80
+EXPOSE 80 443
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s \
     CMD wget -qO- http://127.0.0.1/ >/dev/null || exit 1
 
