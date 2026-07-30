@@ -15,7 +15,7 @@ export default defineConfig(({ mode }) => {
   return {
   server: {
     host: true,
-    port: 5173,
+    port: 4153,
     strictPort: true,
     // In production nginx proxies /api/ to API_UPSTREAM (see Dockerfile). The Vite dev server
     // has no equivalent by default, so relative API calls (VITE_API_BASE_URL=/api/v1) would
