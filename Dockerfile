@@ -4,13 +4,8 @@
 FROM node:22-alpine AS builder
 WORKDIR /app
 
-COPY package.json package-lock.json pnpm-lock.yaml ./
-RUN if [ -f pnpm-lock.yaml ]; then \
-      corepack enable pnpm && \
-      corepack pnpm install --frozen-lockfile || corepack pnpm install --no-frozen-lockfile; \
-    else \
-      npm ci; \
-    fi
+COPY package.json package-lock.json ./
+RUN npm ci
 
 COPY . .
 
@@ -28,11 +23,7 @@ ENV VITE_APP_NAME=$VITE_APP_NAME \
     VITE_ENCRYPT_DECRYPT_KEY=$VITE_ENCRYPT_DECRYPT_KEY \
     VITE_USE_MOCK_API=$VITE_USE_MOCK_API
 
-RUN if [ -f pnpm-lock.yaml ]; then \
-      corepack pnpm exec npm run build; \
-    else \
-      npm run build; \
-    fi
+RUN npm run build
 
 # ---- runtime ----
 FROM nginx:1.27-alpine AS runtime
