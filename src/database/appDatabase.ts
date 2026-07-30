@@ -70,6 +70,31 @@ export interface InventoryGlobal {
   synced: boolean
 }
 
+// The backend's real Order header/metadata record — deliberately named `OrderRecord`, not
+// `Order`, to avoid colliding with the existing `Order` interface above (the simple local
+// cart-items-and-total record the POS checkout flow already queues offline). The two are
+// separate local tables syncing to the same `/orders` endpoint; column names here match the
+// backend's real wire fields verbatim, same rationale as Payment/InventoryGlobal above.
+export interface OrderRecord {
+  ID: string // GUID, generated client-side via crypto.randomUUID() at creation time.
+  ROID: string
+  CustomerID?: string
+  PaymentID?: string
+  CashierID: string
+  PreparerID?: string
+  AppliedOfferID?: string
+  IsReturned: boolean
+  ReturnedReason?: string
+  transaction_id?: string
+  CreatedDate: string
+  CreatedBy: string
+  UpdatedDate?: string
+  UpdatedBy?: string
+  // Set locally when this record is pushed to the server — see Payment.syc_datetime above.
+  syc_datetime?: string
+  synced: boolean
+}
+
 export type PendingCustomerOperation = 'create' | 'update' | 'delete' | 'approve' | 'reject'
 
 export interface PendingCustomer {
@@ -100,6 +125,7 @@ class AppDatabase extends Dexie {
   pendingCustomers!: Table<PendingCustomer, number>
   payments!: Table<Payment, string>
   inventory!: Table<InventoryGlobal, string>
+  orderRecords!: Table<OrderRecord, string>
 
   constructor() {
     super('BeCafeDB')
@@ -154,6 +180,14 @@ class AppDatabase extends Dexie {
     // (confirmed: InventoryGlobal rows aren't edited locally after creation).
     this.version(17).stores({
       inventory: 'ID,synced,SupplierID,Product_SKU_ID',
+    })
+
+    // `orderRecords` — same create-once, synced-flag-on-record shape as `payments`/`inventory`
+    // (confirmed: IsReturned/ReturnedReason are set at creation time, not edited in later — a
+    // return is a separate flow/table if one gets built). Distinct from the pre-existing `orders`
+    // table, which stores the local cart/checkout draft, not this backend Order header record.
+    this.version(18).stores({
+      orderRecords: 'ID,synced,ROID,CustomerID,PaymentID',
     })
 
     // Standard Dexie multi-tab recipe: if another tab is mid-upgrade to a newer schema, our open
