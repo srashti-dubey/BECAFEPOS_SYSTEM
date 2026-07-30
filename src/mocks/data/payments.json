@@ -1,0 +1,17 @@
+[
+  {
+    "ID": "seed-payment-0001",
+    "PaymentModeID": 1,
+    "AmountPaid": 300,
+    "Ack_Received": true,
+    "Cashier_UserID": "1",
+    "SGSTValue": 0,
+    "CGSTValue": 0,
+    "Comments": "Seed dummy payment",
+    "OrderID": "SEED-1001",
+    "transaction_id": "seed-txn-0001",
+    "CreatedDate": "2026-07-01T09:00:00.000Z",
+    "CreatedBy": "1",
+    "synced": true
+  }
+]

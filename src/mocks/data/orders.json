@@ -1,0 +1,12 @@
+[
+  {
+    "id": 1,
+    "orderNo": "SEED-1001",
+    "items": [
+      { "productId": 1, "qty": 2, "price": 90 },
+      { "productId": 5, "qty": 1, "price": 120 }
+    ],
+    "total": 300,
+    "synced": true
+  }
+]
