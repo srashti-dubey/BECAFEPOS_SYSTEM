@@ -42,6 +42,18 @@ export default defineConfig(({ mode }) => {
       // worker. Only turn this on to specifically test app-shell offline caching, and expect to
       // manually unregister it (DevTools > Application > Service Workers) when done.
 
+      workbox: {
+        // Without this, the generated SW never intercepts navigation requests at all — nginx's
+        // own `try_files ... /index.html` (docker/nginx.conf) handles a hard refresh on a deep
+        // react-router route (e.g. /admin/customers) whenever the network is reachable, but
+        // offline there's no nginx to fall back to. navigateFallback makes the SW itself serve
+        // the precached app shell for any navigation it can't otherwise resolve, so a refresh on
+        // a nested route works offline too, not just a fresh load of "/". Excludes API calls —
+        // those must fail/queue normally (see customerService.ts), not be served the HTML shell.
+        navigateFallback: "/index.html",
+        navigateFallbackDenylist: [/^\/api\//],
+      },
+
       manifest: {
         name: "BeCafe POS",
         short_name: "BeCafe",

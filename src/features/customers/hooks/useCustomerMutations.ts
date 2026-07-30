@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQueryClient, type QueryClient } from '@tanstack/react-query'
 import { customerService } from '@/features/customers/services/customerService'
 import { customerRepository } from '@/features/customers/repositories/CustomerRepository'
 import { customersKeys } from '@/features/customers/hooks/customersKeys'
@@ -18,15 +18,25 @@ function errorMessage(error: unknown, fallback: string) {
   return error instanceof Error ? error.message : fallback
 }
 
+// Writes the freshly-read Dexie snapshot straight into the query cache instead of just
+// invalidateQueries() + waiting on a background refetch — the Dexie write behind a 'queued'
+// result has already happened by the time this runs, so there's no reason for the pending-sync
+// badge/row to lag behind it. Every offline-capable mutation below calls this in onSuccess so the
+// list page reflects the change the instant the mutation settles, online or off.
+async function refreshPendingCustomers(queryClient: QueryClient) {
+  const pending = await customerRepository.getPending()
+  queryClient.setQueryData(customersKeys.pendingList(), pending)
+}
+
 export function useCreateCustomerMutation() {
   const queryClient = useQueryClient()
 
   return useMutation({
     mutationFn: (input: CreateCustomerInput) => customerService.create(input),
-    onSuccess: (result) => {
+    onSuccess: async (result) => {
       void queryClient.invalidateQueries({ queryKey: customersKeys.lists() })
       if (result.status === 'queued') {
-        void queryClient.invalidateQueries({ queryKey: customersKeys.pendingList() })
+        await refreshPendingCustomers(queryClient)
         notificationService.info('You are offline. Customer saved on this device and will sync automatically once you are back online.')
       } else {
         notificationService.success('Customer created successfully')
@@ -46,8 +56,8 @@ export function useUpdateLocalCustomerMutation() {
   return useMutation({
     mutationFn: ({ pendingId, data }: { pendingId: number; data: CreateCustomerInput }) =>
       customerRepository.update(pendingId, data),
-    onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: customersKeys.pendingList() })
+    onSuccess: async () => {
+      await refreshPendingCustomers(queryClient)
       notificationService.success('Customer updated')
     },
     onError: (error) => {
@@ -63,8 +73,8 @@ export function useDeleteLocalCustomerMutation() {
 
   return useMutation({
     mutationFn: (pendingId: number) => customerRepository.remove(pendingId),
-    onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: customersKeys.pendingList() })
+    onSuccess: async () => {
+      await refreshPendingCustomers(queryClient)
       notificationService.success('Customer removed')
     },
     onError: (error) => {
@@ -102,9 +112,9 @@ export function useUpdateCustomerMutation() {
       void queryClient.invalidateQueries({ queryKey: customersKeys.lists() })
       notificationService.error(errorMessage(error, 'Unable to update customer'))
     },
-    onSuccess: (result) => {
+    onSuccess: async (result) => {
       if (result.status === 'queued') {
-        void queryClient.invalidateQueries({ queryKey: customersKeys.pendingList() })
+        await refreshPendingCustomers(queryClient)
         notificationService.info(OFFLINE_QUEUED_MESSAGE)
         return
       }
@@ -123,10 +133,10 @@ export function useDeleteCustomerMutation() {
 
   return useMutation({
     mutationFn: (id: string) => customerService.remove(id),
-    onSuccess: (result) => {
+    onSuccess: async (result) => {
       void queryClient.invalidateQueries({ queryKey: customersKeys.lists() })
       if (result.status === 'queued') {
-        void queryClient.invalidateQueries({ queryKey: customersKeys.pendingList() })
+        await refreshPendingCustomers(queryClient)
         notificationService.info(OFFLINE_QUEUED_MESSAGE)
       } else {
         notificationService.success('Customer deleted successfully')
@@ -143,10 +153,10 @@ export function useApproveCustomerMutation() {
 
   return useMutation({
     mutationFn: (requestId: number | string) => customerService.approve(requestId),
-    onSuccess: (result) => {
+    onSuccess: async (result) => {
       void queryClient.invalidateQueries({ queryKey: customersKeys.lists() })
       if (result.status === 'queued') {
-        void queryClient.invalidateQueries({ queryKey: customersKeys.pendingList() })
+        await refreshPendingCustomers(queryClient)
         notificationService.info(OFFLINE_QUEUED_MESSAGE)
       } else {
         notificationService.success('Request approved successfully')
@@ -164,10 +174,10 @@ export function useRejectCustomerMutation() {
   return useMutation({
     mutationFn: ({ requestId, comment }: { requestId: number | string; comment?: string }) =>
       customerService.reject(requestId, comment),
-    onSuccess: (result) => {
+    onSuccess: async (result) => {
       void queryClient.invalidateQueries({ queryKey: customersKeys.lists() })
       if (result.status === 'queued') {
-        void queryClient.invalidateQueries({ queryKey: customersKeys.pendingList() })
+        await refreshPendingCustomers(queryClient)
         notificationService.info(OFFLINE_QUEUED_MESSAGE)
       } else {
         notificationService.success('Request rejected successfully')
