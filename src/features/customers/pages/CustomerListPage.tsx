@@ -30,6 +30,7 @@ import {
 import { customersKeys } from '@/features/customers/hooks/customersKeys'
 import { toPendingDisplayCustomer, parsePendingCustomerId } from '@/features/customers/lib/pendingCustomer'
 import { syncPendingCustomers } from '@/features/customers/services/customerSyncService'
+import { refreshOfflineCustomersCache } from '@/features/customers/services/customerService'
 import type { Customer, CreateCustomerInput, CustomersListParams, CustomersSortField } from '@/features/customers/types'
 import { useDebouncedValue } from '@/hooks'
 import { notificationService } from '@/services/notificationService'
@@ -69,6 +70,11 @@ export default function CustomerListPage() {
           `${result.failed} customer change${result.failed === 1 ? '' : 's'} failed to sync — check the console for details`,
         )
       }
+
+      // Refreshes the offline browse cache (see customerService.ts) whenever we're actually
+      // online — keeps it from ever going stale beyond "since we last had connectivity", the
+      // same trigger points (mount + reconnect) as the pending-op sync just above.
+      void refreshOfflineCustomersCache()
     }
 
     void runSync()

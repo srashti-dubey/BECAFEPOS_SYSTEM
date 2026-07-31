@@ -10,6 +10,8 @@ import type {
   ApproveCustomerResult,
   RejectCustomerResult,
   CustomersListParams,
+  CustomersListResult,
+  Customer,
 } from '@/features/customers/types'
 
 // navigator.onLine only reflects whether the network interface is up, not whether the server was
@@ -20,6 +22,93 @@ import type {
 // must propagate instead of being silently queued.
 function isConnectivityFailure(error: unknown) {
   return !navigator.onLine || (error as ApiError | undefined)?.isNetworkError === true
+}
+
+// Applies the same search/status/sort/pagination the real /customers list endpoint would, but
+// client-side against the offline cache (see refreshOfflineCustomersCache) — the closest offline
+// parity with how POS's static product catalog behaves, since the customer list has no static
+// equivalent to ship.
+function listFromCache(all: Customer[], params: CustomersListParams): CustomersListResult {
+  let filtered = all
+
+  if (params.status) {
+    filtered = filtered.filter((customer) => customer.status === params.status)
+  }
+
+  if (params.search) {
+    const query = params.search.trim().toLowerCase()
+    filtered = filtered.filter(
+      (customer) =>
+        customer.name.toLowerCase().includes(query) ||
+        customer.mobile.toLowerCase().includes(query) ||
+        customer.email.toLowerCase().includes(query) ||
+        customer.remarks.toLowerCase().includes(query),
+    )
+  }
+
+  if (params.sortBy) {
+    const sortBy = params.sortBy
+    const direction = params.sortDirection === 'desc' ? -1 : 1
+    filtered = [...filtered].sort((a, b) => {
+      const left = a[sortBy]
+      const right = b[sortBy]
+      if (left == null || right == null) {
+        return 0
+      }
+      if (typeof left === 'number' && typeof right === 'number') {
+        return (left - right) * direction
+      }
+      return String(left).localeCompare(String(right)) * direction
+    })
+  }
+
+  const start = (params.page - 1) * params.pageSize
+  return {
+    data: filtered.slice(start, start + params.pageSize),
+    total: filtered.length,
+  }
+}
+
+async function list(params: CustomersListParams): Promise<CustomersListResult> {
+  if (navigator.onLine) {
+    try {
+      return await customersApi.list(params)
+    } catch (error) {
+      if (!isConnectivityFailure(error)) {
+        throw error
+      }
+    }
+  }
+
+  const cached = await customerRepository.getCachedCustomerList()
+  return listFromCache(cached, params)
+}
+
+// Refreshes the offline read-cache with every active customer, looping through pages of the real
+// (already-verified-working) list endpoint rather than the separate, unverified /active/list
+// endpoint. Best-effort: silently gives up on failure (offline, or a real server error) — the
+// cache just stays at whatever it last successfully held, same as any other cache miss.
+export async function refreshOfflineCustomersCache(): Promise<void> {
+  if (!navigator.onLine) {
+    return
+  }
+
+  try {
+    const pageSize = 200
+    let all: Customer[] = []
+
+    for (let page = 1; ; page += 1) {
+      const result = await customersApi.list({ page, pageSize, sortBy: 'name', sortDirection: 'asc' })
+      all = all.concat(result.data)
+      if (result.data.length < pageSize || all.length >= result.total) {
+        break
+      }
+    }
+
+    await customerRepository.cacheCustomerList(all)
+  } catch {
+    // Best-effort — leave the existing cache (if any) untouched.
+  }
 }
 
 // Online-first: only queues locally when the device is actually offline, or the request itself
@@ -108,7 +197,7 @@ async function reject(requestId: number | string, comment?: string): Promise<Rej
 }
 
 export const customerService = {
-  list: (params: CustomersListParams) => customersApi.list(params),
+  list,
   activeList: (params: CustomersListParams) => customersApi.activeList(params),
   getById: (id: string) => customersApi.getById(id),
   create,

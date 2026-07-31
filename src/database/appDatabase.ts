@@ -1,5 +1,5 @@
 import Dexie, { type Table } from 'dexie'
-import type { CreateCustomerInput } from '@/features/customers/types'
+import type { CreateCustomerInput, Customer } from '@/features/customers/types'
 
 export interface Product {
   id: number
@@ -114,6 +114,13 @@ export interface PendingCustomer {
   createdAt: string
 }
 
+// Whatever the most recent successful full-list fetch returned (see
+// customerService.ts's refreshOfflineCustomersCache) — a snapshot to browse/search/sort/filter
+// client-side while offline, the same role public/products.json plays for the POS catalog.
+// Unlike products, this is dynamic real data, so it's refreshed opportunistically whenever online
+// rather than shipped as a static file.
+export type CachedCustomer = Customer
+
 export async function getProduct(id: number) {
   return db.products.get(id)
 }
@@ -126,6 +133,7 @@ class AppDatabase extends Dexie {
   payments!: Table<Payment, string>
   inventory!: Table<InventoryGlobal, string>
   orderRecords!: Table<OrderRecord, string>
+  cachedCustomers!: Table<CachedCustomer, string>
 
   constructor() {
     super('BeCafeDB')
@@ -188,6 +196,14 @@ class AppDatabase extends Dexie {
     // table, which stores the local cart/checkout draft, not this backend Order header record.
     this.version(18).stores({
       orderRecords: 'ID,synced,ROID,CustomerID,PaymentID',
+    })
+
+    // Read-cache for browsing customers offline (view/search/sort/filter), distinct from
+    // pendingCustomers (which queues writes). Replaced wholesale on every successful refresh —
+    // not an outbox, so no `synced`/operation fields needed, just the plain Customer shape keyed
+    // by its real server id.
+    this.version(19).stores({
+      cachedCustomers: 'id,status',
     })
 
     // Standard Dexie multi-tab recipe: if another tab is mid-upgrade to a newer schema, our open

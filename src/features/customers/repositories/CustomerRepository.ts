@@ -1,8 +1,22 @@
-import { db, type PendingCustomer } from '@/database/appDatabase'
+import { db, type PendingCustomer, type CachedCustomer } from '@/database/appDatabase'
 
 class CustomerRepository {
   getAll() {
     return db.pendingCustomers.toArray()
+  }
+
+  // Replaces the entire offline read-cache with a fresh full-list snapshot (see
+  // customerService.refreshOfflineCustomersCache) — a transaction so a reader never sees a
+  // half-cleared table mid-refresh.
+  cacheCustomerList(customers: CachedCustomer[]) {
+    return db.transaction('rw', db.cachedCustomers, async () => {
+      await db.cachedCustomers.clear()
+      await db.cachedCustomers.bulkAdd(customers)
+    })
+  }
+
+  getCachedCustomerList() {
+    return db.cachedCustomers.toArray()
   }
 
   getPending() {
