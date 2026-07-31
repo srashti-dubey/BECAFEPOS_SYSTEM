@@ -25,6 +25,13 @@ class ApiClient {
       withCredentials: true,
       xsrfCookieName: 'XSRF-TOKEN',
       xsrfHeaderName: 'X-XSRF-TOKEN',
+      // Without this, a request on a link that's "up" but can't actually reach the backend
+      // (dropped Wi-Fi, VPN stall, server down) hangs forever instead of failing — since
+      // navigator.onLine only reflects the interface, not reachability, that hang is exactly
+      // what every offline-queueing caller (see customerService.ts's isConnectivityFailure)
+      // depends on rejecting promptly. Axios has no response by then, so errorHandler still
+      // marks it isNetworkError like any other connectivity failure.
+      timeout: 15000,
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',

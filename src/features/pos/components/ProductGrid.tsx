@@ -12,7 +12,7 @@ export default function ProductGrid() {
   }, [])
 
   return (
-    <Grid container spacing={2}>
+    <Grid container spacing={1.75}>
       {products.map((product) => (
         <Grid key={product.id} size={{ xs: 12, sm: 6, md: 4 }}>
           <ProductCard product={product} />
